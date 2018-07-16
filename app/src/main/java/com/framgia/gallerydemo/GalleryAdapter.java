@@ -17,15 +17,14 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     private final String TAG = GalleryAdapter.class.getSimpleName();
     private static final String FILE_PREFIX = "file://";
     private List<String> mLists;
-    private Context mCtx;
+    private Context mContext;
     private LayoutInflater mInflater;
     private int mImageWidth, mImageHeight;
 
-
-    public GalleryAdapter(Context ctx, List<String> lists) {
+    public GalleryAdapter(Context context, List<String> lists) {
         mLists = lists;
-        mCtx = ctx;
-        mInflater = LayoutInflater.from(mCtx);
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
         mImageWidth = getWidth();
         mImageHeight = getWidth();
     }
@@ -52,7 +51,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     private int getWidth() {
-        return mCtx.getResources().getDisplayMetrics().widthPixels / 2;
+        return mContext.getResources().getDisplayMetrics().widthPixels / 2;
     }
 
     class GalleryViewHolder extends RecyclerView.ViewHolder {

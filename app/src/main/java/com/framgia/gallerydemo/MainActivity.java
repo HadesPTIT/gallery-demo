@@ -1,5 +1,6 @@
 package com.framgia.gallerydemo;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -21,17 +22,23 @@ public class MainActivity extends AppCompatActivity implements OnTaskFinishedLis
     private static final int REQUEST_CODE_STORAGE = 1;
     private static final int SPAN_COUNT = 2;
     private static final String TAG = MainActivity.class.getSimpleName();
+    private String[] mExtensions;
+    private ProgressDialog mDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermission();
             return;
         }
-        new GalleryLoadTask(this).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
+        mDialog.show();
+        new GalleryLoadTask(this,mExtensions).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
     }
 
     @Override
@@ -39,7 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnTaskFinishedLis
         switch (requestCode) {
             case REQUEST_CODE_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new GalleryLoadTask(this).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
+                    new GalleryLoadTask(this,mExtensions).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
+                    mDialog.show();
                 } else {
                     requestPermission();
                 }
@@ -49,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements OnTaskFinishedLis
 
     @Override
     public void onTaskFinished(ArrayList<String> listPaths) {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
         RecyclerView recyclerGallery = findViewById(R.id.recycler_view_gallery);
         GalleryAdapter galleryAdapter = new GalleryAdapter(this, listPaths);
 
@@ -57,10 +68,19 @@ public class MainActivity extends AppCompatActivity implements OnTaskFinishedLis
         recyclerGallery.setAdapter(galleryAdapter);
     }
 
+
+    private void initView() {
+        mExtensions = getResources().getStringArray(R.array.array_extensions);
+        mDialog = new ProgressDialog(this);
+        mDialog.setCancelable(false);
+        mDialog.setMessage(getString(R.string.msg_loading));
+    }
+
     private void requestPermission() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            new GalleryLoadTask(this).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
+            new GalleryLoadTask(this,mExtensions).execute(Environment.getExternalStorageDirectory().getAbsolutePath());
+            mDialog.show();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
