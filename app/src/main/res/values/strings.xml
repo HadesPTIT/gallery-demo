@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">GalleryDemo</string>
+
+    <string name="msg_denied">Permission is not granted</string>
+    <string name="msg_denied_and_not_show_again">You might need to grant permission in Settings</string>
+    <string name="msg_permission_rationale">This permission is needed to load Gallery images. If cancel, you might need to grant permission in Settings </string>
+
+    <string name="title_permission_needed">Request Permission</string>
+
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="size">Size</string>
+    <string name="msg_loading">Loading...</string>
+
+    <string-array name="array_extensions">
+
+        <item>png</item>
+        <item>jpg</item>
+        <item>jpeg</item>
+        <item>PNG</item>
+        <item>JPG</item>
+        <item>JPEG</item>
+
+    </string-array>
+
 </resources>
